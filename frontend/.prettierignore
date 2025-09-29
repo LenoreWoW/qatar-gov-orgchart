@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Coverage directory
+coverage/
+
+# IDE/Editor files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Config files that should remain unchanged
+.eslintrc.*
+vite.config.*
+tailwind.config.*
+postcss.config.*
+
+# Auto-generated files
+public/manifest.json
+
+# Large data files
+*.json

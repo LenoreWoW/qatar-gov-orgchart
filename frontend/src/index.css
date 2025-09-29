@@ -1,0 +1,247 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Global reset to fix alignment issues */
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900 font-english;
+    direction: ltr;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  [dir="rtl"] {
+    @apply font-arabic;
+    direction: rtl;
+  }
+
+  /* Prevent any horizontal scrolling or shifting */
+  .container {
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Ensure proper layout without forcing viewport width */
+  div[dir="ltr"], div[dir="rtl"] {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  /* Normal container behavior */
+  .container, [class*="container"], [class*="max-w"], [class*="mx-auto"] {
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-qatar-maroon focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-qatar-maroon text-white hover:bg-qatar-maroon/90 px-4 py-2;
+  }
+
+  .btn-secondary {
+    @apply btn bg-gray-100 text-gray-900 hover:bg-gray-200 px-4 py-2;
+  }
+
+  .btn-outline {
+    @apply btn border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 px-4 py-2;
+  }
+
+  .input {
+    @apply flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-qatar-maroon focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .card {
+    @apply rounded-lg border bg-white text-gray-900 shadow-sm;
+  }
+
+  .org-chart-node {
+    @apply bg-white border-2 border-gray-300 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer;
+  }
+
+  .org-chart-node.selected {
+    @apply border-qatar-maroon bg-qatar-maroon/5;
+  }
+
+  .org-chart-link {
+    @apply stroke-gray-400 stroke-2;
+  }
+
+  .loading-spinner {
+    @apply animate-spin rounded-full border-2 border-gray-200 border-t-qatar-maroon h-6 w-6;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gradient-qatar {
+    background: linear-gradient(135deg, #8B1538 0%, #A91B47 100%);
+  }
+
+  .org-chart-container {
+    @apply w-full;
+    contain: layout style;
+    overflow-anchor: none;
+  }
+
+  .org-connector {
+    @apply bg-qatar-maroon;
+    contain: size layout;
+    will-change: transform;
+  }
+
+  .org-connector-junction {
+    @apply bg-qatar-maroon border-white;
+    contain: layout;
+    box-shadow: 0 2px 8px rgba(139, 21, 56, 0.25);
+  }
+
+  .org-chart-grid {
+    @apply w-full;
+    contain: layout;
+    min-width: 0;
+  }
+
+  .org-node-container {
+    @apply relative;
+    contain: layout style;
+    min-width: 0;
+  }
+
+  /* Improved connector visibility on wide screens */
+  @media (min-width: 1200px) {
+    .org-connector {
+      @apply shadow-sm;
+      opacity: 0.95;
+    }
+
+    .org-connector-junction {
+      @apply shadow-lg;
+    }
+  }
+
+  /* Better connector positioning on smaller screens */
+  @media (max-width: 768px) {
+    .org-chart-grid {
+      grid-template-columns: 1fr !important;
+      gap: 2rem 1rem !important;
+    }
+
+    .org-connector {
+      @apply opacity-90;
+    }
+  }
+
+  /* Dynamic spacing support for infinite hierarchy levels */
+  .org-level-deep {
+    margin-top: 2rem;
+    /* Spacing is now calculated dynamically via JavaScript */
+  }
+
+  /* Ensure proper minimum spacing for very deep hierarchies */
+  .org-level-deep[data-level] {
+    min-height: 120px; /* Minimum card height for readability */
+  }
+
+  /* Progressive card size reduction for deep levels */
+  .org-level-deep[data-level="5"] { max-width: 280px; }
+  .org-level-deep[data-level="6"] { max-width: 260px; }
+  .org-level-deep[data-level="7"] { max-width: 240px; }
+  .org-level-deep[data-level="8"] { max-width: 220px; }
+  .org-level-deep[data-level="9"] { max-width: 200px; }
+
+  /* Extreme deep levels (10+) - ultra-compact but readable */
+  .org-level-deep[data-level="10"],
+  .org-level-deep[data-level="11"],
+  .org-level-deep[data-level="12"],
+  .org-level-deep[data-level="13"],
+  .org-level-deep[data-level="14"],
+  .org-level-deep[data-level="15"] {
+    max-width: 180px !important;
+    min-width: 180px !important;
+    font-size: 0.75rem;
+    padding: 8px !important;
+  }
+
+  /* Ultra-deep emergency fallback (15+) */
+  .org-level-deep[data-level^="1"][data-level$="5"],
+  .org-level-deep[data-level^="1"][data-level$="6"],
+  .org-level-deep[data-level^="1"][data-level$="7"],
+  .org-level-deep[data-level^="1"][data-level$="8"],
+  .org-level-deep[data-level^="1"][data-level$="9"],
+  .org-level-deep[data-level^="2"] {
+    max-width: 160px !important;
+    min-width: 160px !important;
+    font-size: 0.7rem;
+    padding: 6px !important;
+  }
+
+  /* Prevent overlap on deep hierarchies */
+  @media (max-width: 1024px) {
+    [class*='min-w-'][class*='max-w-'] {
+      max-width: 280px !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    [class*='min-w-'][class*='max-w-'] {
+      min-width: 240px !important;
+      max-width: 280px !important;
+    }
+  }
+}
