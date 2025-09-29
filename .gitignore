@@ -122,3 +122,5 @@ uploads/
 
 # Production specific
 postgres_data/
+# Local Netlify folder
+.netlify
