@@ -143,6 +143,8 @@ export interface Employee {
   lastNameAr?: string;
   email?: string;
   phone?: string;
+  jobTitle?: string;
+  jobTitleAr?: string;
   startDate?: string;
   assignmentType?: string;
 }

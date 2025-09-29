@@ -1,5 +1,5 @@
 import React, { useState, createContext, useContext, useRef, useEffect } from 'react';
-import { Shield, Home, Network, Users, Settings, LogOut, Globe, ZoomIn, ZoomOut, RotateCcw, Maximize2, Minimize2, Building2, Plus, Edit3, Trash2, Search, X, Sparkles, User, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Shield, Home, Network, Users, LogOut, Globe, Building2, Plus, Edit3, Trash2, X, Sparkles, User, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import EnhancedOrgChart from './components/EnhancedOrgChart';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -1096,8 +1096,6 @@ const InteractiveOrgChart: React.FC = () => {
     getDepartmentName,
     getSubdepartmentName,
     getUnitName,
-    getSubdepartmentsByDepartment,
-    getUnitsBySubdepartment,
     // New nested hierarchy functions
     getChildDepartments,
     getChildSubdepartments,
@@ -1107,7 +1105,6 @@ const InteractiveOrgChart: React.FC = () => {
     getRootUnits
   } = useData();
   const [chartData, setChartData] = useState<OrgPosition>(orgChartData);
-  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
   const [showEmployeeDialog, setShowEmployeeDialog] = useState(false);
 
   // Build complete organization chart with recursive nesting: Minister → Department(s) → Subdepartment(s) → Unit(s)
@@ -1122,7 +1119,7 @@ const InteractiveOrgChart: React.FC = () => {
         const childUnits = buildUnitsRecursively(unit.id, subdepartmentId);
         const unitEmployeeCount = getEmployeesByUnit(unit.id).length;
         const totalEmployees = unitEmployeeCount + childUnits.reduce((acc, child) => {
-          const childCount = parseInt(child.department.split(' ')[0]) || 0;
+          const childCount = parseInt(child.department?.split(' ')[0] || '0') || 0;
           return acc + childCount;
         }, 0);
 
@@ -1254,16 +1251,16 @@ const InteractiveOrgChart: React.FC = () => {
 
     // Search through employees
     employees.forEach(employee => {
-      const matchesName = employee.firstName.toLowerCase().includes(normalizedQuery) ||
-                         employee.lastName.toLowerCase().includes(normalizedQuery) ||
+      const matchesName = employee.firstName?.toLowerCase().includes(normalizedQuery) ||
+                         employee.lastName?.toLowerCase().includes(normalizedQuery) ||
                          employee.firstNameAr?.toLowerCase().includes(normalizedQuery) ||
                          employee.lastNameAr?.toLowerCase().includes(normalizedQuery);
 
-      const matchesPosition = employee.jobTitle.toLowerCase().includes(normalizedQuery) ||
+      const matchesPosition = employee.jobTitle?.toLowerCase().includes(normalizedQuery) ||
                              employee.jobTitleAr?.toLowerCase().includes(normalizedQuery);
 
       const matchesId = employee.id.toLowerCase().includes(normalizedQuery) ||
-                       employee.email.toLowerCase().includes(normalizedQuery);
+                       employee.email?.toLowerCase().includes(normalizedQuery);
 
       if (matchesName || matchesPosition || matchesId) {
         const departmentName = employee.departmentId ? getDepartmentName(employee.departmentId) : '';
@@ -1275,7 +1272,7 @@ const InteractiveOrgChart: React.FC = () => {
         results.push({
           type: 'employee',
           id: employee.id,
-          name: `${employee.firstName} ${employee.lastName}`,
+          name: `${employee.firstName || ''} ${employee.lastName || ''}`,
           nameAr: employee.firstNameAr && employee.lastNameAr ? `${employee.firstNameAr} ${employee.lastNameAr}` : undefined,
           position: employee.jobTitle,
           positionAr: employee.jobTitleAr,
@@ -1361,30 +1358,15 @@ const InteractiveOrgChart: React.FC = () => {
     setShowSearchResults(true);
   }, [employees, departments, subdepartments, units, getDepartmentName, getSubdepartmentName, getUnitName]);
 
-  // Handle search input changes
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-    performSearch(value);
-  };
-
-  // Clear search
-  const clearSearch = () => {
-    setSearchQuery('');
-    setSearchResults([]);
-    setShowSearchResults(false);
-  };
 
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
   const [editingPosition, setEditingPosition] = useState<string | null>(null);
   const [isAddingChild, setIsAddingChild] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ title: '', titleAr: '', holder: '', department: '' });
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const [zoomLevel, setZoomLevel] = useState(1);
+  const [isFullScreen] = useState(false);
   const [dialogPosition, setDialogPosition] = useState<{x: number, y: number} | null>(null);
   const [hoveredPosition, setHoveredPosition] = useState<{position: OrgPosition, x: number, y: number, level: number} | null>(null);
   const [showLegend, setShowLegend] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Array<{
     type: 'employee' | 'position' | 'department';
     id: string;
